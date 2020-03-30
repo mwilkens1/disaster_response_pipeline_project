@@ -47,6 +47,12 @@ def clean_data(df):
         # convert column from string to numeric
         categories[column] = pd.to_numeric(categories[column])
 
+    # Replace the 2 in the 'repeated' column with 1
+    categories.related.replace(2, 1, inplace=True)
+
+    # Drop the column that only has zeros
+    categories = categories.drop(columns=['child_alone'])
+    
     # Replace categories column in df with new category columns.
     # drop the original categories column from `df`
     df = df.drop(columns=['categories'])
@@ -63,7 +69,7 @@ def save_data(df, database_filename):
     """Saves cleaned dataframe as table called 'messages' in sql database"""
 
     engine = create_engine('sqlite:///' + database_filename)
-    df.to_sql('messages', engine, index=False)    
+    df.to_sql('messages', engine, index=False, if_exists='replace')    
 
 def main():
     """ wrapper function that loads, cleans and saves data """
@@ -91,7 +97,6 @@ def main():
               'to as the third argument. \n\nExample: python process_data.py '\
               'disaster_messages.csv disaster_categories.csv '\
               'DisasterResponse.db')
-
 
 if __name__ == '__main__':
     main()
