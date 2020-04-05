@@ -14,7 +14,7 @@ import pandas as pd
 import sys
 import nltk
 nltk.download(['punkt', 'wordnet','stopwords'])
-
+from my_tokenizer import tokenize
 
 def load_data(database_filepath):
     """
@@ -37,31 +37,6 @@ def load_data(database_filepath):
     category_names = Y.columns.to_list()
 
     return(X, Y, category_names)
-
-def tokenize(message):
-    """Tokenization function to process the text data"""
-
-    url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%'\
-        '[0-9a-fA-F][0-9a-fA-F]))+'
-
-    # Removing any URLs
-    detected_urls = re.findall(url_regex, message)
-
-    for url in detected_urls:
-        message = message.replace(url, "urlplaceholder")
-
-    # Removing punctuation
-    message = re.sub(r"[^a-zA-Z0-9]", " ", message)
-
-    # Tokenizing the message
-    tokens = word_tokenize(message)
-
-    # Lemmatize, lowercase, strip and also removing stopwords
-    clean_tokens = [WordNetLemmatizer().lemmatize(t).lower().strip()
-                    for t in tokens if t not in stopwords.words("english")]
-
-    return(clean_tokens)
-
 
 def build_model():
     """
@@ -130,6 +105,7 @@ def save_model(model, model_filepath):
 
 
 def main():
+    
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
