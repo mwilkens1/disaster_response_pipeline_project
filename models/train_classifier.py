@@ -34,7 +34,7 @@ def load_data(database_filepath):
     
     X = df.message
     Y = df.iloc[:, 4:]
-    category_names = Y.columns.to_list()
+    category_names = list(Y.columns)
 
     return(X, Y, category_names)
 
